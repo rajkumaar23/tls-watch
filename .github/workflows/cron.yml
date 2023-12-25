@@ -6,22 +6,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  run:
+  cron:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v1
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-    - name: Pull Docker image
-      run: docker pull ghcr.io/rajkumaar23/ssl-expiry-watch:main
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.20
 
+    - name: Run Go build
+      run: go build -o ssl-expiry-watcher
+    
     - name: Set up configuration
-      run: echo "$CONFIG_JSON" > config.json
+      run: echo '$CONFIG_JSON' > config.json
       env:
         CONFIG_JSON: ${{ secrets.CONFIG_JSON }}
 
-    - name: Run Docker container
-      run: docker run -v "$(pwd)/config.json:/app/config.json" ghcr.io/rajkumaar23/ssl-expiry-watch:main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run Go program
+      run: |
+        ./ssl-expiry-watcher
