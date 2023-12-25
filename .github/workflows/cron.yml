@@ -1,4 +1,4 @@
-name: Run SSL Expiry Watch
+name: watch cron
 
 on:
   schedule:
