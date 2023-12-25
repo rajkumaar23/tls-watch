@@ -1,9 +1,0 @@
-{
-  "hostnames" : [
-    "duck.com",
-    "twitter.com"
-  ],
-  "threshold": 10,
-  "telegram_id" : 12345678,
-  "telegram_bot_token" : "<THE_TOKEN_FROM_BOTFATHER>"
-}
