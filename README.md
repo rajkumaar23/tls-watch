@@ -9,10 +9,10 @@ ensure you have `go` installed.
 
 ## configuration
 set the following environment variables, either in a .env file (or) your pipeline configuration:
-- `HOSTNAMES`: Comma-separated list of hostnames.
-- `THRESHOLD`: Integer threshold.
-- `TELEGRAM_ID`: Telegram user ID.
-- `TELEGRAM_BOT_TOKEN`: Telegram bot token.
+- `HOSTNAMES`: comma-separated list of hostnames.
+- `THRESHOLD`: integer threshold of the number of days before expiry. if you set it to, say, 10, you will be notified when the cert expires in **<10** days.
+- `TELEGRAM_ID`: telegram user ID to send the notification to.
+- `TELEGRAM_BOT_TOKEN`: telegram bot token which is used to send the notification from.
 
 ## usage
 1) build the application:
