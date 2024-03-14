@@ -23,6 +23,7 @@ func NewRouter(auth *authenticator.OIDCAuthenticator) *gin.Engine {
 		authRouter.GET("/login", authenticator.Login(auth))
 		authRouter.GET("/callback", authenticator.LoginCallback(auth))
 		authRouter.GET("/me", authenticator.IsAuthenticated, authenticator.Me)
+		authRouter.GET("/logout", authenticator.Logout)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {

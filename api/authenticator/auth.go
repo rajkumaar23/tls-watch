@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/url"
 	"os"
 	"tls-watch/api/common"
 
@@ -106,7 +107,7 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Redirect(http.StatusTemporaryRedirect, "/user")
+		ctx.Redirect(http.StatusTemporaryRedirect, "/auth/me")
 	}
 }
 
@@ -123,4 +124,30 @@ func IsAuthenticated(ctx *gin.Context) {
 	} else {
 		ctx.Next()
 	}
+}
+
+func Logout(ctx *gin.Context) {
+	logoutUrl, err := url.Parse("https://" + os.Getenv("AUTH0_DOMAIN") + "/v2/logout")
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	scheme := "http"
+	if ctx.Request.TLS != nil {
+		scheme = "https"
+	}
+
+	returnTo, err := url.Parse(scheme + "://" + ctx.Request.Host)
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	parameters := url.Values{}
+	parameters.Add("returnTo", returnTo.String())
+	parameters.Add("client_id", os.Getenv("AUTH0_CLIENT_ID"))
+	logoutUrl.RawQuery = parameters.Encode()
+
+	ctx.Redirect(http.StatusTemporaryRedirect, logoutUrl.String())
 }
