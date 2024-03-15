@@ -5,15 +5,19 @@ import (
 	"net/http"
 	"tls-watch/api/authenticator"
 	"tls-watch/api/router"
+	"tls-watch/api/store"
 
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("failed to load the env vars: %v", err)
 	}
+	store.InitializeDB()
+}
 
+func main() {
 	auth, err := authenticator.NewOIDCAuthenticator()
 	if err != nil {
 		log.Fatalf("failed to initialize the authenticator: %v", err)

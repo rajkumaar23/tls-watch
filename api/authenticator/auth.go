@@ -2,11 +2,14 @@ package authenticator
 
 import (
 	"context"
+	"database/sql"
 	"errors"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"tls-watch/api/common"
+	store "tls-watch/api/store"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-contrib/sessions"
@@ -100,6 +103,22 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 			return
 		}
 
+		oidc_subject := profile["sub"].(string)
+		_, err = store.GetUserByOIDCSubject(oidc_subject)
+		if err == sql.ErrNoRows {
+			err = store.CreateUser(&store.User{
+				Name:        profile["name"].(string),
+				Picture:     profile["picture"].(string),
+				OIDCSubject: profile["sub"].(string),
+			})
+		}
+
+		if err != nil {
+			log.Printf("creating user failed : %v", err)
+			ctx.JSON(http.StatusInternalServerError, gin.H{"message": "creating user failed"})
+			return
+		}
+
 		session.Set("access_token", token.AccessToken)
 		session.Set("profile", profile)
 		if err := session.Save(); err != nil {
@@ -113,9 +132,16 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 
 func Me(ctx *gin.Context) {
 	session := sessions.Default(ctx)
-	profile := session.Get("profile")
+	profile := session.Get("profile").(map[string]interface{})
 
-	ctx.JSON(http.StatusOK, profile)
+	oidc_subject := profile["sub"].(string)
+	user, err := store.GetUserByOIDCSubject(oidc_subject)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "fetching user failed"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
 }
 
 func IsAuthenticated(ctx *gin.Context) {
