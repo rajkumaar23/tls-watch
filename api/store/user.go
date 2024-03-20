@@ -1,12 +1,11 @@
 package store
 
 import (
-	"fmt"
 	"time"
 )
 
 type User struct {
-	ID          int64     `json:"id"`
+	ID          uint64     `json:"id"`
 	OIDCSubject string    `json:"oidc_subject"`
 	Name        string    `json:"name"`
 	Picture     string    `json:"picture"`
@@ -17,7 +16,7 @@ type User struct {
 func CreateUser(user *User) error {
 	_, err := DB.Exec("INSERT INTO users (oidc_subject, name, picture) VALUES (?, ?, ?)", user.OIDCSubject, user.Name, user.Picture)
 	if err != nil {
-		return fmt.Errorf("User.Create: %v", err)
+		return err
 	}
 	return nil
 }

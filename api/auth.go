@@ -103,7 +103,7 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 		}
 
 		oidc_subject := profile["sub"].(string)
-		_, err = store.GetUserByOIDCSubject(oidc_subject)
+		user, err := store.GetUserByOIDCSubject(oidc_subject)
 		if err == sql.ErrNoRows {
 			err = store.CreateUser(&store.User{
 				Name:        profile["name"].(string),
@@ -118,8 +118,17 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 			return
 		}
 
+		if user == nil {
+			user, err = store.GetUserByOIDCSubject(oidc_subject)
+			if err != nil {
+				log.Printf("fetching new user failed : %v", err)
+				ctx.JSON(http.StatusInternalServerError, gin.H{"message": "fetching new user failed"})
+				return
+			}
+		}
+
 		session.Set("access_token", token.AccessToken)
-		session.Set("profile", profile)
+		session.Set("profile", user)
 		if err := session.Save(); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
@@ -129,18 +138,13 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 	}
 }
 
-func Me(ctx *gin.Context) {
+func getUserProfile(ctx *gin.Context) store.User {
 	session := sessions.Default(ctx)
-	profile := session.Get("profile").(map[string]interface{})
+	return session.Get("profile").(store.User)
+}
 
-	oidc_subject := profile["sub"].(string)
-	user, err := store.GetUserByOIDCSubject(oidc_subject)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "fetching user failed"})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, user)
+func Me(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"profile": getUserProfile(ctx)})
 }
 
 func IsAuthenticated(ctx *gin.Context) {

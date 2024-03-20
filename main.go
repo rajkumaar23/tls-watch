@@ -3,8 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	"tls-watch/api/authenticator"
-	"tls-watch/api/router"
+	"tls-watch/api"
 	"tls-watch/api/store"
 
 	"github.com/joho/godotenv"
@@ -18,12 +17,12 @@ func init() {
 }
 
 func main() {
-	auth, err := authenticator.NewOIDCAuthenticator()
+	auth, err := api.NewOIDCAuthenticator()
 	if err != nil {
 		log.Fatalf("failed to initialize the authenticator: %v", err)
 	}
 
-	router := router.NewRouter(auth)
+	router := api.NewRouter(auth)
 
 	log.Print("server listening on http://localhost:2610/")
 	if err := http.ListenAndServe("0.0.0.0:2610", router); err != nil {
