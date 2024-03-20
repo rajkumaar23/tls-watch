@@ -31,6 +31,12 @@ func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 		domainsRouter.POST("/create", CreateDomain)
 	}
 
+	notificationsRouter := router.Group("/notifications/settings", IsAuthenticated)
+	{
+		notificationsRouter.GET("/", GetAllNotificationSettings)
+		notificationsRouter.POST("/create", CreateNotificationSetting)
+	}
+
 	router.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(404, gin.H{"message": "route not found"})
 	})
