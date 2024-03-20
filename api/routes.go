@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"encoding/gob"
@@ -6,11 +6,9 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-
-	"tls-watch/api/authenticator"
 )
 
-func NewRouter(auth *authenticator.OIDCAuthenticator) *gin.Engine {
+func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	router := gin.Default()
 
 	gob.Register(map[string]interface{}{})
@@ -20,10 +18,10 @@ func NewRouter(auth *authenticator.OIDCAuthenticator) *gin.Engine {
 
 	authRouter := router.Group("/auth")
 	{
-		authRouter.GET("/login", authenticator.Login(auth))
-		authRouter.GET("/callback", authenticator.LoginCallback(auth))
-		authRouter.GET("/me", authenticator.IsAuthenticated, authenticator.Me)
-		authRouter.GET("/logout", authenticator.Logout)
+		authRouter.GET("/login", Login(auth))
+		authRouter.GET("/callback", LoginCallback(auth))
+		authRouter.GET("/me", IsAuthenticated, Me)
+		authRouter.GET("/logout", Logout)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {

@@ -1,4 +1,4 @@
-package authenticator
+package api
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"tls-watch/api/common"
 	store "tls-watch/api/store"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -60,7 +59,7 @@ func (a *OIDCAuthenticator) VerifyIDToken(ctx context.Context, token *oauth2.Tok
 
 func Login(auth *OIDCAuthenticator) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		state, err := common.GenerateRandomState()
+		state, err := GenerateRandomState()
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
