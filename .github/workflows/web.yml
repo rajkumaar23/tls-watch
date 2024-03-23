@@ -1,4 +1,4 @@
-name: Deploy web content to GitHub Pages
+name: deploy web ui
 
 on:
   push:
@@ -20,26 +20,29 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - name: Set up Node
+      - name: set up node
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'npm'
-      - name: Install dependencies
+      - name: install dependencies
         run: npm install
-      - name: Create .env file
+      - name: create .env file
         run: echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
-      - name: Build
+      - name: build
         run: npm run build
-      - name: Setup Pages
+      - name: setup pages
         uses: actions/configure-pages@v3
-      - name: Upload artifact
+      - name: upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: './dist'
-      - name: Deploy to GitHub Pages
+      - name: deploy to gitHub pages
         id: deployment
         uses: actions/deploy-pages@v1
