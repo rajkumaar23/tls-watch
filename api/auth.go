@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -134,7 +135,7 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Redirect(http.StatusTemporaryRedirect, "/auth/me")
+		ctx.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf(os.Getenv("WEB_ORIGIN")+"/"))
 	}
 }
 
@@ -162,19 +163,8 @@ func Logout(ctx *gin.Context) {
 		return
 	}
 
-	scheme := "http"
-	if ctx.Request.TLS != nil {
-		scheme = "https"
-	}
-
-	returnTo, err := url.Parse(scheme + "://" + ctx.Request.Host)
-	if err != nil {
-		ctx.String(http.StatusInternalServerError, err.Error())
-		return
-	}
-
 	parameters := url.Values{}
-	parameters.Add("returnTo", returnTo.String())
+	parameters.Add("returnTo", fmt.Sprintf(os.Getenv("WEB_ORIGIN")+"/login"))
 	parameters.Add("client_id", os.Getenv("AUTH0_CLIENT_ID"))
 	logoutUrl.RawQuery = parameters.Encode()
 
