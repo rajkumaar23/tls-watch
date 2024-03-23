@@ -24,6 +24,7 @@ import {
   X,
   type Icon as LucideIcon,
   Globe,
+  Watch,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -51,6 +52,7 @@ export const Icons = {
   moon: Moon,
   globe: Globe,
   laptop: Laptop,
+  watch: Watch,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
