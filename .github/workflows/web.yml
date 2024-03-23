@@ -3,7 +3,6 @@ name: deploy web ui
 on:
   push:
     branches: ['main', 'revived']
-  
   workflow_dispatch:
 
 permissions:
@@ -44,7 +43,7 @@ jobs:
       - name: upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './dist'
+          path: './web/dist'
       - name: deploy to gitHub pages
         id: deployment
         uses: actions/deploy-pages@v1
