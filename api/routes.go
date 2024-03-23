@@ -2,8 +2,10 @@ package api
 
 import (
 	"encoding/gob"
+	"os"
 	"tls-watch/api/store"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -11,6 +13,11 @@ import (
 
 func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	router := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{os.Getenv("WEB_ORIGIN")}
+	config.AllowCredentials = true
+	router.Use(cors.New(config))
 
 	gob.Register(store.User{})
 
