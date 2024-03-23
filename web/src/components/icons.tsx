@@ -23,6 +23,7 @@ import {
   User,
   X,
   type Icon as LucideIcon,
+  Globe,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -48,6 +49,7 @@ export const Icons = {
   pizza: Pizza,
   sun: SunMedium,
   moon: Moon,
+  globe: Globe,
   laptop: Laptop,
   gitHub: ({ ...props }: LucideProps) => (
     <svg

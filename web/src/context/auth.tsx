@@ -10,7 +10,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import Cookies from "js-cookie";
 import { AUTH_COOKIE } from "@/lib/constants";
 
-type User = {
+export type User = {
   id: number;
   oidc_subject: string;
   name: string;
