@@ -25,6 +25,7 @@ import {
   type Icon as LucideIcon,
   Globe,
   Watch,
+  ExternalLink,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
@@ -53,6 +54,7 @@ export const Icons = {
   globe: Globe,
   laptop: Laptop,
   watch: Watch,
+  externalLink: ExternalLink,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

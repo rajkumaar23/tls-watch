@@ -3,7 +3,7 @@ import Login from "./pages/login";
 import { ThemeProvider } from "./components/theme-provider";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider, RequireAuth } from "./context/auth";
-import { Dashboard } from "./pages/dashboard";
+import { Domains } from "./pages/domains";
 import { DashboardLayout } from "./components/layouts/dashboard";
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route element={<RequireAuth />}>
               <Route element={<DashboardLayout />}>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={<Domains />} />
               </Route>
             </Route>
           </Routes>

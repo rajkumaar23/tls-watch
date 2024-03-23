@@ -6,8 +6,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/user-avatar";
-import { User } from "@/context/auth";
 import { API_URL, AUTH_COOKIE } from "@/lib/constants";
+import { User } from "@/lib/types";
 import Cookies from "js-cookie";
 import { HTMLAttributes } from "react";
 import { Link } from "react-router-dom";

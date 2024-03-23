@@ -9,15 +9,7 @@ import React, {
 import { Navigate, Outlet } from "react-router-dom";
 import Cookies from "js-cookie";
 import { AUTH_COOKIE } from "@/lib/constants";
-
-export type User = {
-  id: number;
-  oidc_subject: string;
-  name: string;
-  picture: string;
-  created_at: string;
-  updated_at: string;
-};
+import { User } from "@/lib/types";
 
 type AuthContextType = {
   user: User | null;
