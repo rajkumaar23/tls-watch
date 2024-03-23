@@ -22,7 +22,7 @@ import {
   Trash,
   User,
   X,
-  type Icon as LucideIcon,
+  LucideIcon,
   Globe,
   Watch,
   ExternalLink,
