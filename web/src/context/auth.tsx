@@ -51,8 +51,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     };
 
-    fetchUserData();
-  }, []);
+    if (!user) {
+      fetchUserData();
+    }
+  });
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
