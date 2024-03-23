@@ -3,6 +3,7 @@ name: deploy web ui
 on:
   push:
     branches: ['main', 'revived']
+  
   workflow_dispatch:
 
 permissions:
