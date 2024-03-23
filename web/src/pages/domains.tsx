@@ -1,4 +1,13 @@
 import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,24 +15,59 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Domain } from "@/lib/types";
 import { API } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { z } from "zod";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 export function Domains() {
   const [domains, setDomains] = useState<Domain[] | null>(null);
 
-  useEffect(() => {
-    const fetchDomains = async () => {
-      const { data } = await API.get("/domains/");
-      setDomains(data.domains);
-    };
+  const fetchDomains = useCallback(async () => {
+    const { data } = await API.get("/domains/");
+    setDomains(data.domains);
+  }, []);
 
+  useEffect(() => {
     if (!domains) {
       fetchDomains();
     }
   });
+
+  const newDomainFormSchema = z.object({
+    domain: z.string().min(2),
+  });
+  const newDomainForm = useForm<z.infer<typeof newDomainFormSchema>>({
+    resolver: zodResolver(newDomainFormSchema),
+    defaultValues: {
+      domain: "",
+    },
+  });
+
+  const onNewDomainSubmit = async (
+    values: z.infer<typeof newDomainFormSchema>
+  ) => {
+    try {
+      await API.post("/domains/create", {
+        domain: values.domain,
+      });
+      newDomainForm.reset();
+      fetchDomains();
+    } catch {
+      console.log("error adding a new domain");
+    }
+  };
 
   return (
     <>
@@ -36,10 +80,43 @@ export function Domains() {
                 manage your domains for monitoring tls certificates
               </p>
             </div>
-            <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-2">
-              <Icons.add className="mr-1" />
-              add domain
-            </button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="px-2">
+                  <Icons.add className="mr-1" />
+                  add domain
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>add a new domain</DialogTitle>
+                </DialogHeader>
+                <Form {...newDomainForm}>
+                  <form
+                    onSubmit={newDomainForm.handleSubmit(onNewDomainSubmit)}
+                    className="space-y-4"
+                  >
+                    <FormField
+                      control={newDomainForm.control}
+                      name="domain"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input placeholder="x.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <DialogClose asChild>
+                      <Button className="w-full" type="submit">
+                        Submit
+                      </Button>
+                    </DialogClose>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
           </div>
           <div className="divide-y divide-border rounded-md border">
             {domains

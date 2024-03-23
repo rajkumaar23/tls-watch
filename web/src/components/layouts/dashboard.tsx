@@ -9,7 +9,7 @@ export function DashboardLayout() {
   const { user } = useAuth();
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col space-y-6">
       <header className="sticky top-0 z-40 border-b bg-background">
         <div className="container flex h-16 items-center justify-between py-4">
           <MainNav />
@@ -23,7 +23,7 @@ export function DashboardLayout() {
           ) : null}
         </div>
       </header>
-      <div className="mt-5 container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
+      <div className="mt-5 mb-auto container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
         <aside className="hidden w-[200px] flex-col md:flex">
           <Sidebar />
         </aside>
@@ -31,7 +31,7 @@ export function DashboardLayout() {
           <Outlet />
         </main>
       </div>
-      <Footer className="border-t fixed bottom-0 left-0 z-20 w-full p-1 md:flex md:items-center md:justify-between md:p-2" />
-    </>
+      <Footer className="border-t" />
+    </div>
   );
 }
