@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/user-avatar";
 import { User } from "@/context/auth";
+import { API_URL, AUTH_COOKIE } from "@/lib/constants";
+import Cookies from "js-cookie";
 import { HTMLAttributes } from "react";
 import { Link } from "react-router-dom";
 
@@ -26,7 +28,9 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
       <DropdownMenuContent align="end">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
-            {user.name && <p className="font-medium">{user.name.toLowerCase()}</p>}
+            {user.name && (
+              <p className="font-medium">{user.name.toLowerCase()}</p>
+            )}
             {/* {user.email && (
               <p className="w-[200px] truncate text-sm text-muted-foreground">
                 {user.email}
@@ -36,7 +40,12 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/">logout</Link>
+          <Link
+            to={`${API_URL}/auth/logout`}
+            onClick={() => Cookies.remove(AUTH_COOKIE)}
+          >
+            logout
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
