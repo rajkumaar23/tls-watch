@@ -11,7 +11,7 @@ import (
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatalf("failed to load the env vars: %v", err)
+		log.Printf("failed to load the env vars: %v, still proceeding", err)
 	}
 	store.InitializeDB()
 }
