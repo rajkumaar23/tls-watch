@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tls-watch-api
+  namespace: tls-watch-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tls-watch-api
+  template:
+    metadata:
+      labels:
+        app: tls-watch-api
+    spec:
+      containers:
+        - name: tls-watch
+          image: ghcr.io/rajkumaar23/tls-watch:main
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 2610
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: db-password
+                  name: api-secrets
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: dbmate-url
+                  name: api-secrets
+            - name: AUTH0_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  key: auth0-client-id
+                  name: api-secrets
+            - name: AUTH0_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: auth0-client-secret
+                  name: api-secrets                              
+            - name: GIN_MODE
+              valueFrom:
+                configMapKeyRef:
+                  key: gin-mode
+                  name: api-config
+            - name: AUTH0_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  key: auth0-domain
+                  name: api-config
+            - name: AUTH0_CALLBACK_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: auth0-callback-url
+                  name: api-config
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: db-host
+                  name: api-config
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: db-name
+                  name: api-config
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: db-username
+                  name: api-config
+            - name: WEB_ORIGIN
+              valueFrom:
+                configMapKeyRef:
+                  key: web-origin
+                  name: api-config                                                      
+      imagePullSecrets:
+        - name: ghcr-secret

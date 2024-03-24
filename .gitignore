@@ -3,3 +3,5 @@
 .env
 ssl-expiry-watch
 **/secret.yaml
+**/config.yaml
+**/ghcr-secret.yaml
