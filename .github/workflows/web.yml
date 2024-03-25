@@ -3,6 +3,8 @@ name: web ui
 on:
   push:
     branches: ['main', 'revived']
+    paths:
+      - 'web/**'
   workflow_dispatch:
 
 permissions:
