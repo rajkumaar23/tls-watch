@@ -9,5 +9,6 @@ spec:
     - name: http
       port: 2610
       targetPort: 2610
+      nodePort: 32610
   selector:
     app: tls-watch-api
