@@ -15,6 +15,5 @@ RUN if [ "$TARGETARCH" == "amd64"] ; \
 RUN chmod +x /usr/local/bin/dbmate
 WORKDIR /app/
 COPY --from=builder /app/main .
-COPY --from=builder /app/db/ .
 EXPOSE 2610
-CMD /usr/local/bin/dbmate up && ./main
+CMD ["./main"]
