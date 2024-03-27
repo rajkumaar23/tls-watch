@@ -92,6 +92,7 @@ jobs:
             kubectl apply -f pvc.yaml && \
             kubectl apply -f deployment.yaml && \
             kubectl apply -f service.yaml && \
+            kubectl rollout restart -f deployment.yaml && \
             cd ${{ secrets.APP_DIR }}/k8s/api && \
             kubectl apply -f namespace.yaml && \
             kubectl delete secret api-secrets -n tls-watch-api --ignore-not-found && \
@@ -112,5 +113,6 @@ jobs:
               --from-literal auth0-callback-url="${{ vars.AUTH0_CALLBACK_URL }}" \
               --from-literal web-origin="${{ vars.WEB_ORIGIN }}" && \
             kubectl apply -f deployment.yaml && \
-            kubectl apply -f service.yaml
+            kubectl apply -f service.yaml && \
+            kubectl rollout restart -f deployment.yaml
           EOF
