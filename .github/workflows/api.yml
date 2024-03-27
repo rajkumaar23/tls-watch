@@ -98,13 +98,13 @@ jobs:
             kubectl delete secret ghcr-secret -n tls-watch-api --ignore-not-found && \
             kubectl create secret docker-registry ghcr-secret -n tls-watch-api --docker-server=ghcr.io --docker-username=${{ github.repository_owner }} --docker-password=${{ secrets.GITHUB_TOKEN }} && \
             kubectl delete configmap api-config -n tls-watch-api --ignore-not-found && \
-            kubectl create configmap api-config -n tls-watch-api
-              --from-literal gin-mode="release" && \
-              --from-literal db-name="${{ vars.DB_NAME }}" && \
-              --from-literal db-host="${{ vars.DB_HOST }}" && \
-              --from-literal db-username="${{ vars.DB_USERNAME }}" && \
-              --from-literal auth0-domain="${{ vars.AUTH0_DOMAIN }}" && \
-              --from-literal auth0-callback-url="${{ vars.AUTH0_CALLBACK_URL }}" && \
+            kubectl create configmap api-config -n tls-watch-api \
+              --from-literal gin-mode="release" \
+              --from-literal db-name="${{ vars.DB_NAME }}" \
+              --from-literal db-host="${{ vars.DB_HOST }}" \
+              --from-literal db-username="${{ vars.DB_USERNAME }}" \
+              --from-literal auth0-domain="${{ vars.AUTH0_DOMAIN }}" \
+              --from-literal auth0-callback-url="${{ vars.AUTH0_CALLBACK_URL }}" \
               --from-literal web-origin="${{ vars.WEB_ORIGIN }}" && \
             kubectl apply -f deployment.yaml && \
             kubectl apply -f service.yaml
