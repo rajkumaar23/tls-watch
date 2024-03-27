@@ -8,6 +8,10 @@ on:
       - '.github/workflows/web.yml'
   workflow_dispatch:
 
+concurrency:
+  group: 'api'
+  cancel-in-progress: true
+    
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
