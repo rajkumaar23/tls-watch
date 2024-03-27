@@ -101,7 +101,7 @@ jobs:
               --from-literal db-password="${{ secrets.DB_PASSWORD }}" \
               --from-literal dbmate-url="${{ secrets.DBMATE_URL }}" && \
             kubectl delete secret ghcr-secret -n tls-watch-api --ignore-not-found && \
-            kubectl create secret docker-registry ghcr-secret -n tls-watch-api --docker-server=ghcr.io --docker-username=${{ github.repository_owner }} --docker-password=${{ secrets.GHCR_PAT }} && \
+            kubectl create secret docker-registry ghcr-secret -n tls-watch-api --docker-server=ghcr.io --docker-username=${{ github.repository_owner }} --docker-password=${{ secrets.GHCR_PAT }} --docker-email="${{ vars.GHCR_EMAIL }}" && \
             kubectl delete configmap api-config -n tls-watch-api --ignore-not-found && \
             kubectl create configmap api-config -n tls-watch-api \
               --from-literal gin-mode="release" \
