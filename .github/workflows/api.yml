@@ -76,15 +76,15 @@ jobs:
       - name: init db
         run: |
           ssh -t pi << EOF
-            cd ${{ secrets.APP_DIR }}
-            git pull
-            cd ${{ secrets.APP_DIR }}/k8s/db
-            kubectl apply -f namespace.yaml
-            kubectl delete secret db-password -n tls-watch-db --ignore-not-found
-            kubectl create secret generic db-password -n tls-watch-db --from-literal root-password="${{ secrets.DB_PASSWORD }}"
-            kubectl delete configmap db-config -n tls-watch-db --ignore-not-found
-            kubectl create configmap db-config -n tls-watch-db --from-literal db-name="${{ vars.DB_NAME }}"
-            kubectl apply -f pvc.yaml
-            kubectl apply -f deployment.yaml
+            cd ${{ secrets.APP_DIR }} && \
+            git pull && \
+            cd ${{ secrets.APP_DIR }}/k8s/db && \
+            kubectl apply -f namespace.yaml && \
+            kubectl delete secret db-password -n tls-watch-db --ignore-not-found && \
+            kubectl create secret generic db-password -n tls-watch-db --from-literal root-password="${{ secrets.DB_PASSWORD }}" && \
+            kubectl delete configmap db-config -n tls-watch-db --ignore-not-found && \
+            kubectl create configmap db-config -n tls-watch-db --from-literal db-name="${{ vars.DB_NAME }}" && \
+            kubectl apply -f pvc.yaml && \
+            kubectl apply -f deployment.yaml && \
             kubectl apply -f service.yaml
           EOF
