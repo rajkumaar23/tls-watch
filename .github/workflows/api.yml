@@ -46,8 +46,8 @@ jobs:
           platforms: linux/arm64/v8,linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:main
-          cache-to: type=inline
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   
   deploy:
     name: "deploy to pi"
