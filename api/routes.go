@@ -2,6 +2,8 @@ package api
 
 import (
 	"encoding/gob"
+	"log"
+	"net/url"
 	"os"
 	"tls-watch/api/store"
 
@@ -14,15 +16,22 @@ import (
 func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	router := gin.Default()
 
+	web_origin := os.Getenv("WEB_ORIGIN")
+
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{os.Getenv("WEB_ORIGIN")}
+	config.AllowOrigins = []string{web_origin}
 	config.AllowCredentials = true
 	router.Use(cors.New(config))
 
 	gob.Register(store.User{})
 
+	web_origin_url, err := url.Parse(web_origin)
+	if err != nil {
+		log.Fatalf("web origin url could not be parsed: %v", err)
+	}
+
 	store := cookie.NewStore([]byte("secret"))
-	store.Options(sessions.Options{Domain: os.Getenv("WEB_ORIGIN")})
+	store.Options(sessions.Options{Domain: web_origin_url.Hostname()})
 	router.Use(sessions.Sessions("auth-session", store))
 
 	authRouter := router.Group("/auth")
