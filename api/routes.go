@@ -31,7 +31,7 @@ func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	}
 
 	store := cookie.NewStore([]byte("secret"))
-	store.Options(sessions.Options{Domain: web_origin_url.Hostname()})
+	store.Options(sessions.Options{Domain: web_origin_url.Hostname(), Path: "/", Secure: true})
 	router.Use(sessions.Sessions("auth-session", store))
 
 	authRouter := router.Group("/auth")
