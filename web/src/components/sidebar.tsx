@@ -30,7 +30,7 @@ export function Sidebar() {
   const { pathname: path } = useLocation();
 
   return (
-    <nav className="grid items-start gap-2">
+    <nav className="grid items-start gap-2 sticky top-20">
       {sidebarItems.map((item, index) => {
         const Icon = Icons[item.icon || "arrowRight"];
         return (
