@@ -76,15 +76,12 @@ export function Domains() {
           <div className="flex items-center justify-between px-2">
             <div className="grid gap-1">
               <h1 className="font-bold text-3xl md:text-4xl">domains</h1>
-              <p className="text-lg text-muted-foreground">
-                manage your domains for monitoring tls certificates
-              </p>
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button className="px-2">
+                <Button className="px-2 pr-3">
                   <Icons.add className="mr-1" />
-                  add domain
+                  add new
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
