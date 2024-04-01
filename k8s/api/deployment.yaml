@@ -20,6 +20,11 @@ spec:
           ports:
             - containerPort: 2610
           env:
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: telegram-bot-token
+                  name: api-secrets
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
