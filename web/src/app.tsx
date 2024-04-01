@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthProvider, RequireAuth } from "./context/auth";
 import { Domains } from "./pages/domains";
 import { DashboardLayout } from "./components/layouts/dashboard";
+import { Settings } from "./pages/settings";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route element={<RequireAuth />}>
               <Route element={<DashboardLayout />}>
                 <Route path="/" element={<Domains />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
             </Route>
           </Routes>

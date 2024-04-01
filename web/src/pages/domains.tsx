@@ -40,10 +40,8 @@ export function Domains() {
   }, []);
 
   useEffect(() => {
-    if (!domains) {
-      fetchDomains();
-    }
-  });
+    fetchDomains();
+  }, []);
 
   const newDomainFormSchema = z.object({
     domain: z.string().min(2),
