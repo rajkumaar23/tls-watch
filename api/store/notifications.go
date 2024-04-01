@@ -23,15 +23,25 @@ func CreateNotificationSetting(setting *NotificationSetting) error {
 	return nil
 }
 
-func GetNotificationSettingByUserAndProvider(user_id uint64, provider string) (*NotificationSetting, error) {
-	var setting NotificationSetting
-	row := DB.QueryRow("SELECT * FROM notification_settings WHERE user_id = ? AND provider = ?", user_id, provider)
+func UpdateNotificationSetting(setting *NotificationSetting) error {
+	_, err := DB.Exec(
+		"UPDATE notification_settings SET provider_user_id = ?, enabled = ? WHERE user_id = ? AND provider = ?",
+		setting.ProviderUserID, setting.Enabled, setting.UserID, setting.Provider,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetNotificationSetting(setting *NotificationSetting) (*NotificationSetting, error) {
+	row := DB.QueryRow("SELECT * FROM notification_settings WHERE user_id = ? AND provider = ?", setting.UserID, setting.Provider)
 	if err := row.Scan(
 		&setting.ID, &setting.UserID, &setting.Enabled, &setting.Provider, &setting.ProviderUserID, &setting.CreatedAt, &setting.UpdatedAt,
 	); err != nil {
 		return nil, err
 	}
-	return &setting, nil
+	return setting, nil
 }
 
 func GetAllNotificationSettingsByUserID(user_id uint64) (*[]NotificationSetting, error) {

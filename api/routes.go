@@ -53,7 +53,7 @@ func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	notificationsRouter := router.Group("/notifications/settings", IsAuthenticated)
 	{
 		notificationsRouter.GET("/", GetAllNotificationSettings)
-		notificationsRouter.POST("/create", CreateNotificationSetting)
+		notificationsRouter.POST("/create", CreateOrUpdateNotificationSetting)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {
