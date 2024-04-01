@@ -18,9 +18,11 @@ func CreateOrUpdateNotificationSetting(ctx *gin.Context) {
 		return
 	}
 
-	newSetting.UserID = getUserProfile(ctx).ID
-	setting, err := store.GetNotificationSetting(&newSetting)
-
+	user_id := getUserProfile(ctx).ID
+	setting, err := store.GetNotificationSettingByUserAndProvider(user_id, newSetting.Provider)
+	
+	newSetting.UserID = user_id
+	
 	if setting != nil {
 		err = store.UpdateNotificationSetting(&newSetting)
 		if err != nil {

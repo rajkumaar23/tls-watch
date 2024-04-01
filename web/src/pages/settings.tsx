@@ -10,6 +10,7 @@ import {
   Form,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { NotificationSetting } from "@/lib/types";
 import { API } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,16 +26,24 @@ const telegramFormSchema = z.object({
 });
 
 export function Settings() {
+  const { toast } = useToast();
   const [telegramSettings, setTelegramSettings] =
     useState<NotificationSetting | null>(null);
 
   const fetchNotificationSettings = useCallback(async () => {
-    const { data } = await API.get("/notifications/settings/");
-    setTelegramSettings(
-      data.settings.find(
-        (it: NotificationSetting) => it.provider === "telegram"
-      )
-    );
+    try {
+      const { data } = await API.get("/notifications/settings/");
+      setTelegramSettings(
+        data.settings.find(
+          (it: NotificationSetting) => it.provider === "telegram"
+        )
+      );
+    } catch {
+      toast({
+        description: "error updating telegram settings",
+        variant: "destructive",
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -60,13 +69,18 @@ export function Settings() {
     values: z.infer<typeof telegramFormSchema>
   ) => {
     try {
-      await API.post("/notifications/settings/create", {
-        username: values.username,
+      const { data } = await API.post("/notifications/settings/create", {
+        provider_user_id: values.username,
         enabled: values.enabled,
         provider: "telegram",
       });
+
+      toast({ description: data.message });
     } catch {
-      console.log("error updating telegram settings");
+      toast({
+        description: "error updating telegram settings",
+        variant: "destructive",
+      });
     }
   };
 
