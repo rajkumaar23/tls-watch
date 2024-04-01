@@ -1,16 +1,24 @@
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { API_URL } from "@/lib/constants";
-import { Link } from "react-router-dom";
+import { API_URL, AUTH_COOKIE } from "@/lib/constants";
+import Cookies from "js-cookie";
+import { Link, Navigate } from "react-router-dom";
 
 export default function Login() {
+  if (Cookies.get(AUTH_COOKIE)) {
+    return <Navigate to={{ pathname: "/" }} />;
+  }
+
   return (
     <>
       <div className="container mt-32">
         <div className="md:w-2/4 m-auto border-none">
           <div className="flex flex-col items-center space-y-1.5 p-6">
             <h3 className="font-semibold tracking-tight text-2xl lg:text-6xl">
-              tls watch <span className="text-xs tracking-normal lg:text-xl">as a service</span>
+              tls watch{" "}
+              <span className="text-xs tracking-normal lg:text-xl">
+                as a service
+              </span>
             </h3>
             <p className="text-sm text-muted-foreground lg:text-xl">
               monitor your tls certificates without hassle

@@ -10,6 +10,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import Cookies from "js-cookie";
 import { AUTH_COOKIE } from "@/lib/constants";
 import { User } from "@/lib/types";
+import { useToast } from "@/components/ui/use-toast";
 
 type AuthContextType = {
   user: User | null;
@@ -32,6 +33,7 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -39,14 +41,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await API.get("/auth/me");
         setUser(response.data.profile);
       } catch (error) {
-        console.error("error fetching user data:", error);
+        toast({
+          description: "error fetching user data",
+          variant: "destructive",
+        });
+        console.error(error);
       }
     };
 
-    if (!user) {
-      fetchUserData();
-    }
-  });
+    fetchUserData();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>

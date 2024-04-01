@@ -38,11 +38,12 @@ export function Settings() {
           (it: NotificationSetting) => it.provider === "telegram"
         )
       );
-    } catch {
+    } catch (error) {
       toast({
-        description: "error updating telegram settings",
+        description: "error fetching telegram settings",
         variant: "destructive",
       });
+      console.error(error);
     }
   }, []);
 
@@ -76,11 +77,12 @@ export function Settings() {
       });
 
       toast({ description: data.message });
-    } catch {
+    } catch (error) {
       toast({
         description: "error updating telegram settings",
         variant: "destructive",
       });
+      console.error(error);
     }
   };
 

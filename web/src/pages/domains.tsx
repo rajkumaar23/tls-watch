@@ -30,13 +30,23 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 
 export function Domains() {
+  const { toast } = useToast();
   const [domains, setDomains] = useState<Domain[] | null>(null);
 
   const fetchDomains = useCallback(async () => {
-    const { data } = await API.get("/domains/");
-    setDomains(data.domains);
+    try {
+      const { data } = await API.get("/domains/");
+      setDomains(data.domains);
+    } catch (error) {
+      toast({
+        description: "error fetching your domains",
+        variant: "destructive",
+      });
+      console.error(error);
+    }
   }, []);
 
   useEffect(() => {
@@ -57,13 +67,18 @@ export function Domains() {
     values: z.infer<typeof newDomainFormSchema>
   ) => {
     try {
-      await API.post("/domains/create", {
+      const { data } = await API.post("/domains/create", {
         domain: values.domain,
       });
+      toast({ description: data.message });
       newDomainForm.reset();
       fetchDomains();
-    } catch {
-      console.log("error adding a new domain");
+    } catch (error) {
+      toast({
+        description: "error adding a new domain",
+        variant: "destructive",
+      });
+      console.error(error);
     }
   };
 
