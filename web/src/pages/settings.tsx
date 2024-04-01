@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const telegramFormSchema = z.object({
-  username: z
+  user_id: z
     .string()
     .regex(/^[a-z0-9_]+$/, "should only contain a-z, 0-9 and underscores"),
   enabled: z.boolean(),
@@ -54,14 +54,14 @@ export function Settings() {
   const telegramForm = useForm<z.infer<typeof telegramFormSchema>>({
     resolver: zodResolver(telegramFormSchema),
     defaultValues: {
-      username: "",
+      user_id: "",
       enabled: false,
     },
   });
 
   useEffect(() => {
     if (telegramSettings) {
-      telegramForm.setValue("username", telegramSettings.provider_user_id);
+      telegramForm.setValue("user_id", telegramSettings.provider_user_id);
       telegramForm.setValue("enabled", telegramSettings.enabled);
     }
   }, [telegramSettings, telegramForm]);
@@ -71,7 +71,7 @@ export function Settings() {
   ) => {
     try {
       const { data } = await API.post("/notifications/settings/create", {
-        provider_user_id: values.username,
+        provider_user_id: values.user_id,
         enabled: values.enabled,
         provider: "telegram",
       });
@@ -107,13 +107,13 @@ export function Settings() {
                 >
                   <FormField
                     control={telegramForm.control}
-                    name="username"
+                    name="user_id"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>your username</FormLabel>
+                        <FormLabel>your user id</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="example123"
+                            placeholder="12345678"
                             {...field}
                             defaultValue={telegramSettings?.provider_user_id}
                           />
