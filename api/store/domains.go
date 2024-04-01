@@ -30,6 +30,26 @@ func GetDomainByUserAndValue(user_id uint64, domain string) (*Domain, error) {
 }
 
 func GetAllDomainsByUserID(user_id uint64) (*[]Domain, error) {
+	result, err := DB.Query("SELECT * FROM domains WHERE user_id = ?", user_id)
+	if err != nil {
+		return nil, err
+	}
+
+	var domains []Domain
+	for result.Next() {
+		var domain Domain
+		err = result.Scan(&domain.ID, &domain.UserID, &domain.Domain, &domain.CreatedAt, &domain.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+
+		domains = append(domains, domain)
+	}
+
+	return &domains, nil
+}
+
+func GetAllDomains() (*[]Domain, error) {
 	result, err := DB.Query("SELECT * FROM domains")
 	if err != nil {
 		return nil, err
@@ -47,4 +67,13 @@ func GetAllDomainsByUserID(user_id uint64) (*[]Domain, error) {
 	}
 
 	return &domains, nil
+}
+
+func GetOwnerForDomain(domain string) (*User, error) {
+	var user User
+	row := DB.QueryRow("SELECT * FROM users WHERE id = (SELECT user_id FROM domains WHERE domain = ?)", domain)
+	if err := row.Scan(&user.ID, &user.OIDCSubject, &user.Name, &user.Picture, &user.CreatedAt, &user.UpdatedAt); err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

@@ -46,7 +46,7 @@ func GetNotificationSettingByUserAndProvider(user_id uint64, provider string) (*
 }
 
 func GetAllNotificationSettingsByUserID(user_id uint64) (*[]NotificationSetting, error) {
-	result, err := DB.Query("SELECT * FROM notification_settings")
+	result, err := DB.Query("SELECT * FROM notification_settings WHERE user_id = ?", user_id)
 	if err != nil {
 		return nil, err
 	}
