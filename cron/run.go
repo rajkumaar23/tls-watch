@@ -45,7 +45,7 @@ func processDomain(domain store.Domain) {
 	}
 
 	for _, setting := range *notificationSettings {
-		if setting.Provider == "telegram" {
+		if setting.Provider == "telegram" && setting.Enabled {
 			SendTelegramMessage(&domain, expiry, setting.ProviderUserID)
 		}
 	}
