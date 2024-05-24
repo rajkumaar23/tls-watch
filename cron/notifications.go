@@ -34,7 +34,7 @@ func SendTelegramMessage(domain *store.Domain, expiry time.Time, telegramUserID 
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 || err != nil {
-		log.Printf("sending message for %s to %s failed, body : %v, err : %v", domain.Domain, telegramUserID, string(body), err)
+		log.Printf("cron: sending message for %s to %s failed, body : %v, err : %v", domain.Domain, telegramUserID, string(body), err)
 		return
 	}
 }
