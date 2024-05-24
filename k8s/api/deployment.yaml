@@ -79,6 +79,4 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: web-origin
-                  name: api-config                                                      
-      imagePullSecrets:
-        - name: ghcr-secret
+                  name: api-config
