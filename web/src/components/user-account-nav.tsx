@@ -42,7 +42,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link
             to={`${API_URL}/auth/logout`}
-            onClick={() => Cookies.remove(AUTH_COOKIE)}
+            onClick={() => Cookies.remove(AUTH_COOKIE, {domain: window.location.hostname, path: "/", secure: true})}
           >
             logout
           </Link>
