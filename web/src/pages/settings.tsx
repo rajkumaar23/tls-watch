@@ -33,11 +33,13 @@ export function Settings() {
   const fetchNotificationSettings = useCallback(async () => {
     try {
       const { data } = await API.get("/notifications/settings/");
-      setTelegramSettings(
-        data.settings.find(
-          (it: NotificationSetting) => it.provider === "telegram"
-        )
-      );
+      if (data.settings) {
+        setTelegramSettings(
+          data.settings.find(
+            (it: NotificationSetting) => it.provider === "telegram"
+          )
+        );
+      }
     } catch (error) {
       toast({
         description: "error fetching telegram settings",
@@ -45,11 +47,11 @@ export function Settings() {
       });
       console.error(error);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     fetchNotificationSettings();
-  }, []);
+  }, [fetchNotificationSettings]);
 
   const telegramForm = useForm<z.infer<typeof telegramFormSchema>>({
     resolver: zodResolver(telegramFormSchema),
