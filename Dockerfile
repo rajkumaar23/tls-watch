@@ -17,4 +17,4 @@ WORKDIR /app/
 COPY --from=builder /app/main .
 COPY --from=builder /app/db ./db/
 EXPOSE 2610
-CMD /usr/local/bin/dbmate up && ./main
+ENTRYPOINT /usr/local/bin/dbmate up && ./main
