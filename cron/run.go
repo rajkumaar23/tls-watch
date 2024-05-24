@@ -65,6 +65,6 @@ func Run() {
 		}
 
 		waitGroup.Wait()
-		time.Sleep(time.Minute)
+		time.Sleep(time.Hour * 24) // run every 24 hours
 	}
 }
