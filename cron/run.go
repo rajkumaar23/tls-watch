@@ -52,16 +52,19 @@ func processDomain(domain store.Domain) {
 }
 
 func Run() {
-	domains, err := store.GetAllDomains()
-	if err != nil {
-		log.Fatalf("fetching list of domains failed: %v", err)
-	}
+	for {
+		domains, err := store.GetAllDomains()
+		if err != nil {
+			log.Fatalf("fetching list of domains failed: %v", err)
+		}
 
-	for _, domain := range *domains {
-		log.Printf("processing %v", domain)
-		waitGroup.Add(1)
-		go processDomain(domain)
-	}
+		for _, domain := range *domains {
+			log.Printf("processing %v", domain)
+			waitGroup.Add(1)
+			go processDomain(domain)
+		}
 
-	waitGroup.Wait()
+		waitGroup.Wait()
+		time.Sleep(time.Minute)
+	}
 }

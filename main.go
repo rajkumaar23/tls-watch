@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"tls-watch/api"
 	"tls-watch/api/store"
 	"tls-watch/cron"
@@ -19,19 +18,17 @@ func init() {
 }
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "cron" {
-		cron.Run()
-	} else {
-		auth, err := api.NewOIDCAuthenticator()
-		if err != nil {
-			log.Fatalf("failed to initialize the authenticator: %v", err)
-		}
+	go cron.Run()
 
-		router := api.NewRouter(auth)
+	auth, err := api.NewOIDCAuthenticator()
+	if err != nil {
+		log.Fatalf("failed to initialize the authenticator: %v", err)
+	}
 
-		log.Print("server listening on http://localhost:2610/")
-		if err := http.ListenAndServe("0.0.0.0:2610", router); err != nil {
-			log.Fatalf("there was an error with the http server: %v", err)
-		}
+	router := api.NewRouter(auth)
+
+	log.Print("server listening on http://localhost:2610/")
+	if err := http.ListenAndServe("0.0.0.0:2610", router); err != nil {
+		log.Fatalf("there was an error with the http server: %v", err)
 	}
 }
