@@ -3,7 +3,7 @@ import { MainNav } from "../nav";
 import { Sidebar } from "../sidebar";
 import { Footer } from "../footer";
 import { UserAccountNav } from "../user-account-nav";
-import { useAuth } from "@/context/auth";
+import { useAuth } from "@/hooks/auth";
 
 export function DashboardLayout() {
   const { user } = useAuth();
