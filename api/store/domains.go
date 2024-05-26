@@ -29,6 +29,14 @@ func GetDomainByUserAndValue(user_id uint64, domain string) (*Domain, error) {
 	return &resultDomain, nil
 }
 
+func DeleteDomainByValue(domain Domain) (error) {
+	_, err := DB.Exec("DELETE FROM domains WHERE domain = ?", domain.Domain)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetAllDomainsByUserID(user_id uint64) (*[]Domain, error) {
 	result, err := DB.Query("SELECT * FROM domains WHERE user_id = ?", user_id)
 	if err != nil {

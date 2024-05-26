@@ -48,6 +48,7 @@ func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	{
 		domainsRouter.GET("/", GetAllDomains)
 		domainsRouter.POST("/create", CreateDomain)
+		domainsRouter.DELETE("/delete", DeleteDomain)
 	}
 
 	notificationsRouter := router.Group("/notifications/settings", IsAuthenticated)

@@ -43,6 +43,32 @@ func CreateDomain(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{"message": "domain added successfully"})
 }
 
+func DeleteDomain(ctx *gin.Context) {
+	var domainToDelete store.Domain
+	if err := ctx.ShouldBindJSON(&domainToDelete); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "deleting domain failed"})
+		return
+	}
+	
+	user_id := getUserProfile(ctx).ID
+	_, err := store.GetDomainByUserAndValue(user_id, domainToDelete.Domain)
+	if err != nil {
+		log.Printf("deleting domain failed : %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "deleting domain failed"})
+		return
+	}
+
+	err = store.DeleteDomainByValue(domainToDelete)
+	if err != nil {
+		log.Printf("deleting domain failed : %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "deleting domain failed"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "domain deleted successfuly"})
+
+}
+
 func GetAllDomains(ctx *gin.Context) {
 	user := getUserProfile(ctx)
 	domains, err := store.GetAllDomainsByUserID(user.ID)

@@ -12,7 +12,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -47,11 +46,11 @@ export function Domains() {
       });
       console.error(error);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     fetchDomains();
-  }, []);
+  }, [fetchDomains]);
 
   const newDomainFormSchema = z.object({
     domain: z.string().min(2),
@@ -76,6 +75,20 @@ export function Domains() {
     } catch (error) {
       toast({
         description: "error adding a new domain",
+        variant: "destructive",
+      });
+      console.error(error);
+    }
+  };
+
+  const onDeleteDomain = async (domain: string) => {
+    try {
+      const { data } = await API.delete("/domains/delete", {data: {domain}});
+      toast({ description: data.message });
+      fetchDomains();
+    } catch (error) {
+      toast({
+        description: `error deleting the domain: ${domain}`,
         variant: "destructive",
       });
       console.error(error);
@@ -155,16 +168,14 @@ export function Domains() {
                       </div>
                     </div>
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md border transition-colors hover:bg-muted">
+                      <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md border">
                         <Icons.ellipsis className="h-4 w-4" />
                         <span className="sr-only">Open</span>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          className="flex cursor-pointer items-center text-destructive focus:text-destructive"
-                          onSelect={() => console.log("deleting domain ")}
+                          className="flex cursor-pointer items-center focus:bg-destructive"
+                          onSelect={() => onDeleteDomain(domain.domain)}
                         >
                           Delete
                         </DropdownMenuItem>
