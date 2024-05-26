@@ -66,7 +66,7 @@ func Login(auth *OIDCAuthenticator) gin.HandlerFunc {
 			return
 		}
 
-		session := sessions.Default(ctx)
+		session := sessions.DefaultMany(ctx, "auth-session")
 		session.Set("state", state)
 		if err := session.Save(); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
@@ -79,7 +79,7 @@ func Login(auth *OIDCAuthenticator) gin.HandlerFunc {
 
 func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		session := sessions.Default(ctx)
+		session := sessions.DefaultMany(ctx, "auth-session")
 		if ctx.Query("state") != session.Get("state") {
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": "invalid state parameter"})
 			return
@@ -128,19 +128,25 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 			}
 		}
 
-		session.Set("access_token", token.AccessToken)
-		session.Set("profile", user)
 		if err := session.Save(); err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 			return
 		}
 
-		ctx.Redirect(http.StatusTemporaryRedirect, fmt.Sprintf(os.Getenv("WEB_ORIGIN")+"/"))
+		userSession := sessions.DefaultMany(ctx, "user-session")
+		userSession.Set("access_token", token.AccessToken)
+		userSession.Set("profile", user)
+		if err := userSession.Save(); err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+			return
+		}
+
+		ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/?session=%s", os.Getenv("WEB_ORIGIN"), userSession.Get("access_token")))
 	}
 }
 
 func getUserProfile(ctx *gin.Context) store.User {
-	session := sessions.Default(ctx)
+	session := sessions.DefaultMany(ctx, "user-session")
 	return session.Get("profile").(store.User)
 }
 
@@ -149,7 +155,7 @@ func Me(ctx *gin.Context) {
 }
 
 func IsAuthenticated(ctx *gin.Context) {
-	if sessions.Default(ctx).Get("profile") == nil {
+	if sessions.DefaultMany(ctx, "user-session").Get("profile") == nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
 	} else {
 		ctx.Next()
@@ -168,5 +174,5 @@ func Logout(ctx *gin.Context) {
 	parameters.Add("client_id", os.Getenv("AUTH0_CLIENT_ID"))
 	logoutUrl.RawQuery = parameters.Encode()
 
-	ctx.Redirect(http.StatusTemporaryRedirect, logoutUrl.String())
+	ctx.Redirect(http.StatusFound, logoutUrl.String())
 }

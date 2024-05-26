@@ -1,8 +1,8 @@
 import { API } from "@/lib/utils";
 import { useState, ReactNode, useEffect, createContext } from "react";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { AUTH_COOKIE } from "@/lib/constants";
+import { API_URL, USER_SESSION_COOKIE } from "@/lib/constants";
 import { User } from "@/lib/types";
 
 type AuthProviderProps = {
@@ -27,14 +27,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await API.get("/auth/me");
         setUser(response.data.profile);
       } catch (error) {
-        if (location.pathname != "/login") {
-          Cookies.remove(AUTH_COOKIE, {
-            domain: window.location.hostname,
-            path: "/",
-            secure: true,
-          });
-          navigate("/login");
-        }
+        Cookies.remove(USER_SESSION_COOKIE, {
+          domain: window.location.hostname,
+          path: "/",
+          secure: API_URL.startsWith("https"),
+        });
+        
         console.error(error);
       }
     };
@@ -47,11 +45,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const RequireAuth = () => {
-  if (!Cookies.get(AUTH_COOKIE)) {
-    return <Navigate to={{ pathname: "/login" }} />;
-  }
-  return <Outlet />;
 };

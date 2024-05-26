@@ -1,14 +1,9 @@
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { API_URL, AUTH_COOKIE } from "@/lib/constants";
-import Cookies from "js-cookie";
-import { Link, Navigate } from "react-router-dom";
+import { API_URL } from "@/lib/constants";
+import { Link } from "react-router-dom";
 
 export default function Login() {
-  if (Cookies.get(AUTH_COOKIE)) {
-    return <Navigate to={{ pathname: "/" }} />;
-  }
-
   return (
     <>
       <div className="container mt-32">

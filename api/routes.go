@@ -16,25 +16,23 @@ import (
 func NewRouter(auth *OIDCAuthenticator) *gin.Engine {
 	router := gin.Default()
 
-	web_origin := os.Getenv("WEB_ORIGIN")
+	webOrigin := os.Getenv("WEB_ORIGIN")
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{web_origin}
+	config.AllowOrigins = []string{webOrigin}
 	config.AllowCredentials = true
 	router.Use(cors.New(config))
 
 	gob.Register(store.User{})
 
-	web_origin_url, err := url.Parse(web_origin)
+	webOriginURL, err := url.Parse(webOrigin)
 	if err != nil {
 		log.Fatalf("web origin url could not be parsed: %v", err)
 	}
 
 	store := cookie.NewStore([]byte("secret"))
-	if gin.Mode() == gin.ReleaseMode {
-		store.Options(sessions.Options{Domain: web_origin_url.Hostname(), Path: "/", Secure: true})
-	}
-	router.Use(sessions.Sessions("auth-session", store))
+	store.Options(sessions.Options{Domain: webOriginURL.Hostname(), Path: "/", Secure: webOriginURL.Scheme == "https"})
+	router.Use(sessions.SessionsMany([]string{"auth-session", "user-session"}, store))
 
 	authRouter := router.Group("/auth")
 	{
