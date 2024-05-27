@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"log"
+	"net"
 	"net/http"
 	store "tls-watch/api/store"
 
@@ -17,8 +18,12 @@ func CreateDomain(ctx *gin.Context) {
 		return
 	}
 
-	//TODO: add DNS lookup validation
-	
+	ips, err := net.LookupIP(newDomain.Domain)
+	if err != nil || len(ips) == 0 {
+		ctx.JSON(http.StatusUnprocessableEntity, gin.H{"message": "invalid domain name"})
+		return
+	}
+
 	user_id := getUserProfile(ctx).ID
 	domain, err := store.GetDomainByUserAndValue(user_id, newDomain.Domain)
 	if domain != nil {
