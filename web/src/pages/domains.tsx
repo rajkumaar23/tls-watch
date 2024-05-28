@@ -74,7 +74,7 @@ export function Domains() {
       fetchDomains();
     } catch (error) {
       toast({
-        description: error?.response?.data?.message || "error adding a new domain",
+        description: "error adding a new domain",
         variant: "destructive",
       });
       console.error(error);
@@ -83,7 +83,7 @@ export function Domains() {
 
   const onDeleteDomain = async (domain: string) => {
     try {
-      const { data } = await API.delete("/domains/delete", { data: { domain } });
+      const { data } = await API.delete("/domains/delete", {data: {domain}});
       toast({ description: data.message });
       fetchDomains();
     } catch (error) {
@@ -144,45 +144,45 @@ export function Domains() {
           <div className="divide-y divide-border rounded-md border">
             {domains
               ? domains.map((domain, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-4"
-                >
-                  <div className="grid gap-1">
-                    <div className="flex gap-6 md:gap-10">
-                      <Link
-                        to={`https://${domain.domain}`}
-                        className="items-center space-x-1 flex"
-                        target="_blank"
-                      >
-                        <span className="font-semibold sm:inline-block">
-                          {domain.domain}
-                        </span>
-                        <Icons.externalLink className="h-4 w-4" />
-                      </Link>
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-4"
+                  >
+                    <div className="grid gap-1">
+                      <div className="flex gap-6 md:gap-10">
+                        <Link
+                          to={`https://${domain.domain}`}
+                          className="items-center space-x-1 flex"
+                          target="_blank"
+                        >
+                          <span className="font-semibold sm:inline-block">
+                            {domain.domain}
+                          </span>
+                          <Icons.externalLink className="h-4 w-4" />
+                        </Link>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          {domain.created_at}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        {domain.created_at}
-                      </p>
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md border">
+                        <Icons.ellipsis className="h-4 w-4" />
+                        <span className="sr-only">Open</span>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          className="flex cursor-pointer items-center focus:bg-destructive"
+                          onSelect={() => onDeleteDomain(domain.domain)}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md border">
-                      <Icons.ellipsis className="h-4 w-4" />
-                      <span className="sr-only">Open</span>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        className="flex cursor-pointer items-center focus:bg-destructive"
-                        onSelect={() => onDeleteDomain(domain.domain)}
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              ))
+                ))
               : null}
           </div>
         </div>
