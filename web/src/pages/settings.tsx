@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
@@ -16,6 +16,7 @@ import { API } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 
 const telegramFormSchema = z.object({
@@ -100,6 +101,7 @@ export function Settings() {
           <Card className="lg:w-2/3">
             <CardHeader>
               <CardTitle>telegram</CardTitle>
+              <CardDescription>to receive notifications, you need to start the <Link className="underline" to="https://t.me/tlswatchbot">@tlswatchbot</Link> on telegram</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...telegramForm}>
