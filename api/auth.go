@@ -141,7 +141,7 @@ func LoginCallback(auth *OIDCAuthenticator) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Redirect(http.StatusFound, fmt.Sprintf("%s/?session=%s", os.Getenv("WEB_ORIGIN"), userSession.Get("access_token")))
+		ctx.Redirect(http.StatusFound, os.Getenv("WEB_ORIGIN"))
 	}
 }
 
