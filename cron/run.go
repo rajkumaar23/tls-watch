@@ -44,9 +44,15 @@ func processDomain(domain store.Domain) {
 		log.Printf("cron: fetching notification settings for %d failed: %v", domain.UserID, err)
 	}
 
+	var notificationProvider NotificationProvider
 	for _, setting := range *notificationSettings {
-		if setting.Provider == "telegram" && setting.Enabled {
-			SendTelegramMessage(&domain, expiry, setting.ProviderUserID)
+		if setting.Enabled {
+			notificationProvider, err = NotificationProviderFactory(setting.Provider, setting.ProviderUserID)
+			if err != nil {
+				log.Printf("cron: fetching notification provider for userID=%d failed: %v", domain.UserID, err)
+				continue
+			}
+			notificationProvider.send(&domain, expiry)
 		}
 	}
 }
