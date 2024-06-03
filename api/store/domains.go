@@ -38,6 +38,14 @@ func DeleteDomainByUserAndValue(user_id uint64, domain string) error {
 	return nil
 }
 
+func UpdateLastNotifiedAt(user_id uint64, domain string) error {
+	_, err := DB.Exec("UPDATE domains SET last_notified_at = NOW() WHERE user_id = ? AND domain = ?", user_id, domain)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetAllDomainsByUserID(user_id uint64) (*[]Domain, error) {
 	result, err := DB.Query("SELECT * FROM domains WHERE user_id = ?", user_id)
 	if err != nil {

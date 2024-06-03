@@ -52,7 +52,17 @@ func processDomain(domain store.Domain) {
 				log.Printf("cron: fetching notification provider for userID=%d failed: %v", domain.UserID, err)
 				continue
 			}
-			notificationProvider.send(&domain, expiry)
+			err = notificationProvider.send(&domain, expiry)
+			if err != nil {
+				log.Printf("cron: sending notification for userID=%d, domain=%s failed: %v", domain.UserID, domain.Domain, err)
+				continue
+			}
+
+			err = store.UpdateLastNotifiedAt(domain.UserID, domain.Domain)
+			if err != nil {
+				log.Printf("cron: last notified at column could not be updated for userID=%d, domain=%s, error: %v", domain.UserID, domain.Domain, err)
+				continue
+			}
 		}
 	}
 }
