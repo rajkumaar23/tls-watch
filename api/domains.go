@@ -63,7 +63,7 @@ func DeleteDomain(ctx *gin.Context) {
 		return
 	}
 
-	err = store.DeleteDomainByValue(domainToDelete)
+	err = store.DeleteDomainByUserAndValue(user_id, domainToDelete.Domain)
 	if err != nil {
 		log.Printf("deleting domain failed : %v", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "deleting domain failed"})
