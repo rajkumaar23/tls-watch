@@ -65,9 +65,11 @@ func Run() {
 		}
 
 		for _, domain := range *domains {
-			log.Printf("cron: processing %v", domain)
-			waitGroup.Add(1)
-			go processDomain(domain)
+			if time.Since(domain.LastNotifiedAt) >= 24*time.Hour {
+				log.Printf("cron: processing %v", domain)
+				waitGroup.Add(1)
+				go processDomain(domain)
+			}
 		}
 
 		waitGroup.Wait()
