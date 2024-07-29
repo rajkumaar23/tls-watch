@@ -4,7 +4,7 @@ metadata:
   name: tls-watch-api
   namespace: tls-watch-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: tls-watch-api
